@@ -16,10 +16,10 @@ All of these operations are performed within Cloud Build, and so they have no im
 ## How to use it
 
 1. Authenticate to gcloud in a project of your Cloud Composer
-2. Create a new folder and enter it. 
+2. Create a new folder and enter it 
 3. Download installchecker.yaml from this repository
 4. Run the following command:
-`gcloud builds submit --config installchecker.yaml . --substitutions=_ENVIRONMENT="MYENV",_REGION="MYREGION",_PACKAGE="MYPACKAGE"`
+`gcloud builds submit --config installchecker.yaml --no-source --substitutions=_ENVIRONMENT="MYENV",_REGION="MYREGION",_PACKAGE="MYPACKAGE"`
 replacing:
 + `MYENV` with the name of your Cloud Composer environment
 + `MYREGION` with the region of the environment above, e.g. `us-central1`
