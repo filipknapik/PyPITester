@@ -1,0 +1,25 @@
+steps:
+- id: 'Get Airflow version'
+  name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+  entrypoint: /bin/bash
+  args: ['-c','gcloud composer environments describe ${_ENVIRONMENT} --location=${_REGION} --format="value(config.softwareConfig.imageVersion)" |  awk -F ''-'' ''{print $4}'' > /workspace/composerbuild_version.txt']
+- id: 'Get PyPi modules'
+  name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+  entrypoint: /bin/bash
+  args: ['-c','gcloud composer environments describe ${_ENVIRONMENT} --location=${_REGION} --format="value(config.softwareConfig.pypiPackages)"  | tr -d ''[:space:]'' | tr '';'' ''\n'' | sed ''s/=//'' > /workspace/composerbuild_pypi.txt']
+- id: 'Pull Airflow image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: /bin/bash
+  args: ['-c','docker pull gcr.io/cloud-airflow-releaser/airflow-worker-scheduler-$(cat /workspace/composerbuild_version.txt)']
+- id: 'Tag the image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: /bin/bash
+  args: ['-c','docker tag gcr.io/cloud-airflow-releaser/airflow-worker-scheduler-$(cat /workspace/composerbuild_version.txt):latest airflowimage:latest']
+- id: '=== Pypi install and run DAGs ==='
+  name: 'airflowimage:latest'
+  entrypoint: /bin/bash
+  args: ['-c','sudo pip3 install --upgrade pip;if [[ `wc -l < /workspace/composerbuild_pypi.txt` > 0 ]]; then sudo pip3 install $(</workspace/composerbuild_pypi.txt); fi; if [ $? -eq 1 ]; then exit 1; fi;']
+- id: '=== Test installation of the new package ==='
+  name: 'airflowimage:latest'
+  entrypoint: /bin/bash
+  args: ['-c','sudo pip3 install ${_PACKAGE}']
