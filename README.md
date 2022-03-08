@@ -1,5 +1,5 @@
-# Check installation of a package for Composer environment - outside of this environemnt
-This is to help customers understand and address issues with PyPI package installation without a risk of affecting their environment. 
+# PyPI Conflict Checker for Cloud Composer
+This tool allows customers to test and troubleshoot installation of new PyPI packages outside of their Cloud Composer environments. 
 
 ## How it works
 The tool uses Cloud Build to simulate a build process that checks whether PyPI package conflicts occur. 
