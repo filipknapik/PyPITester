@@ -19,8 +19,14 @@ All of these operations are performed within Cloud Build, and so they have no im
 2. Create a new folder and enter it 
 3. Download installchecker.yaml from this repository
 4. Run the following command:
-`gcloud builds submit --config installchecker.yaml --no-source --substitutions=_ENVIRONMENT="MYENV",_REGION="MYREGION",_PACKAGE="MYPACKAGE"`
+
+```
+gcloud builds submit --config installchecker.yaml --no-source --substitutions=_ENVIRONMENT="MYENV",_REGION="MYREGION",_PACKAGE="MYPACKAGE"`
+```
+
 replacing:
-+ `MYENV` with the name of your Cloud Composer environment
++ `MYENV` with the name of your Cloud Composer environment, e.g. `testenv1`
 + `MYREGION` with the region of the environment above, e.g. `us-central1`
 + `MYPACKAGE` with the name of a package, e.g. `magento` or `magento==3.1`
+
+5. Let the process finish and check the output of the last step. It will end with DONE or ERROR, and output will indicate the details of a potential conflict. 
